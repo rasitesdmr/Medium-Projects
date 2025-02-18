@@ -343,8 +343,8 @@
    Sunucunun beni bilgilendiren bir hata mesajı döndürmesini istiyorum
 
    ✅Scenario: Kullanıcı adı sistemde yoksa 404 Not Found döndürmeli
-      🟢 Given Kullanıcı geçerli bir giriş talebinde bulunuyor
-      🔵 When Kullanıcı adı sistemde yoksa
+      🟢 Given Kullanıcı geçersiz bir kullanıcı adı ile giriş yapmayı deniyor
+      🔵 When Kullanıcı giriş metodu çağrıldığında
       🟠 Then Sunucu 404 NOT FOUND durum kodu ve hata mesajı döndürmeli
 ```
 
@@ -357,8 +357,8 @@
    Sunucunun beni bilgilendiren bir hata mesajı döndürmesini istiyorum
 
    ✅Scenario: Şifre hatalıysa 406 Not Acceptable döndürmeli
-      🟢 Given Kullanıcı geçerli bir giriş talebinde bulunuyor
-      🔵 When Kullanıcının girdiği şifre hatalıysa
+      🟢 Given Kullanıcı geçersiz bir şifre ile giriş yapmayı deniyor
+      🔵 When Kullanıcı giriş metodu çağrıldığında
       🟠 Then Sunucu 406 NOT ACCEPTABLE durum kodu ve hata mesajı döndürmeli
 ```
 
