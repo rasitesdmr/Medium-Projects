@@ -1,0 +1,10 @@
+global:
+  scrape_interval: 15s # Her 15 saniyede bir hedeflerden metrik veri çekilir.
+  scrape_timeout: 10s # Hedef yanıt vermezse 10 saniye sonra zaman aşımına düşer.
+  evaluation_interval: 15s # Prometheus’un kurallar (alert/record) varsa onları ne sıklıkla çalıştıracağı.
+
+# Note : http://prometheus:9090/api/v1/write bu zaten anlık olarak push eder. Scrape ile de manuel pull eder.
+scrape_configs: # Bu bir “job” tanımıdır. Her bir kaynak grubu (Collector, Node Exporter, App) ayrı job_name ile tanımlanır.
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: [ 'cadvisor:8080' ]
