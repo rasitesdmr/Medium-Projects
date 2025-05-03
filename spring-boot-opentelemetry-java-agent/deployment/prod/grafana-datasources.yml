@@ -1,0 +1,47 @@
+apiVersion: 1 # Grafana provisioning API versiyonu. Şu an 1 kullanılmakta.
+
+datasources:
+  - name: Prometheus # Grafana UI’da veri kaynağı olarak görünen isim.
+    type: prometheus # Veri kaynağının tipi. Prometheus bir metrik veri sağlayıcısıdır.
+    uid: prometheus # Unique ID. Diğer yerlerde (örneğin Tempo içinde) referans vermek için kullanılır.
+    access: proxy # Kullanıcının tarayıcısından değil, Grafana sunucusundan bu kaynağa istek atılır.
+    orgId: 1 # Organizasyon ID. Tek organizasyon varsa genellikle 1 olur.
+    url: http://prometheus:9090 # Docker ağı içindeki Prometheus servisinin adresi.
+    basicAuth: false # Prometheus erişimi için kullanıcı adı/parola gerekmediğini belirtir.
+    isDefault: false # Varsayılan veri kaynağı değil (ilk gelen veri kaynağı olarak seçilmez).
+    version: 1 # Datasource versiyonu. Config değiştiğinde bu değer de arttırılmalı (yoksa Grafana yenilemez).
+    editable: false # UI üzerinden bu datasource değiştirilemesin.
+    jsonData:
+      httpMethod: GET # Prometheus'a veri çekerken kullanılacak HTTP metodu.
+      exemplarTraceIdDestinations: # Metriklerdeki exemplar alanındaki trace_id'yi Tempo ile eşleştirmek için kullanılır.
+        - datasourceUid: tempo # Trace ID’leri Tempo kaynağına bağla.
+          name: trace_id # Prometheus’ta trace_id adında bir etiket varsa bunu kullan.
+  - name: Loki # Log’ları göstermek için kullanılan kaynak ismi.
+    type: loki # Kaynak tipi: Loki (log toplayıcı sistem)
+    uid: loki
+    access: proxy
+    orgId: 1
+    url: http://loki:3100 # Loki servisine Docker ağı üzerinden ulaşım.
+    basicAuth: false
+    isDefault: false
+    version: 1
+    editable: false
+  - name: Jaeger # Alternatif bir trace sistemi (Tempo yerine de kullanılabilir).
+    type: jaeger
+    access: proxy
+    orgId: 1
+    url: http://jaeger:16686 # Docker ağı üzerinden Jaeger UI bağlantısı.
+    basicAuth: false
+    isDefault: false
+    version: 1
+    editable: false
+    apiVersion: 1
+    uid: jaeger
+    jsonData:
+      tracesToLogsV2: # Trace'den log'a geçişi tanımlar.
+        datasourceUid: loki
+        spanStartTimeShift: '-1h'
+        spanEndTimeShift: '1h'
+        filterByTraceID: true
+        filterBySpanID: true
+        tags: [ { key: 'service', value: 'job' } ] # Log’larla eşleşmek için kullanılacak tag.

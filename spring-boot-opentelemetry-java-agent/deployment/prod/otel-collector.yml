@@ -1,0 +1,44 @@
+# NOT : Spring Boot servisleri, http://collector:4317 adresine veri yollar. Bu port da gRPC portudur.
+receivers: # Collector’ın dışarıdan hangi verileri kabul ettiğini tanımlar.
+  otlp: # OpenTelemetry’nin kendi protokolü (OpenTelemetry Protocol). Trace, metric ve log verilerini iletmek için kullanılır.
+    protocols: # OTLP verileri gRPC protokolü ile alınacak demek.
+      grpc:
+
+# Note : Performans ve kaynak kullanımı açısından kritik bir optimizasyon.
+processors: # Processor, gelen veriyi iletilmeden önce işleyen katmandır.
+  batch: # Gelen verileri tek tek göndermek yerine küçük gruplar halinde göndererek verimliliği artırır.
+    send_batch_max_size: 1000 # Bir batch en fazla 1000 öğe içerebilir.
+    send_batch_size: 100 # Genelde 100 öğe biriktiğinde gönderilir.
+    timeout: 10s # 10 saniyede batch dolmazsa, o ana kadar gelen veriler gönderilir.
+
+exporters: # Verinin nereye gideceğini tanımlar.
+  prometheusremotewrite: # Collector, metrik verilerini aktif şekilde Prometheus’a “yazar.” Bu yol genelde dış sistemlere veri akışı için kullanılır. Prometheus burada bir veri kabul eden hedef haline gelir.
+    endpoint: "http://prometheus:9090/api/v1/write"
+
+  prometheus:
+    endpoint: "0.0.0.0:8889" # Collector, kendi üzerinde bir endpoint açar (:8889) ve Prometheus’un gelip metric verilerini çekmesini (scrape) sağlar.
+    enable_open_metrics: true # OpenMetrics standardı ile veri formatlanır (Prometheus uyumlu modern veri biçimi).
+
+  otlp/jaeger:
+    endpoint: "http://jaeger:4317" # Collector, trace verisini Jaeger’e OTLP ile gönderir.
+    tls:
+      insecure: true # TLS olmadan (şifresiz) bağlantı yapılır (localhost/test ortamlarında yaygın).
+
+  loki: # Loki, log verilerinin tutulduğu, Grafana ile entegre çalışan log analiz sistemidir. Trace ID ile log eşleştirmesi yapılabilir.
+    endpoint: "http://loki:3100/loki/api/v1/push" # Collector, log verilerini Loki’ye gönderir.
+
+
+service: # Burada hangi veri türünün (metrics, traces, logs), hangi receiver'dan alınıp, hangi processor’dan geçirilip, hangi exporter’a gönderileceği tanımlanır.
+  pipelines:
+    metrics:
+      receivers: [otlp] # Uygulama metriklerini al (otlp)
+      processors: [batch] # Batch’le (batch)
+      exporters: [prometheusremotewrite, prometheus] # Prometheus’a gönder (prometheusremotewrite)
+    traces:
+      receivers: [otlp] # Trace verilerini Collector alır (otlp)
+      processors: [batch] # İşler (batch)
+      exporters: [otlp/jaeger] # 3 farklı yere yollar
+    logs:
+      receivers: [otlp] # Log verilerini alır (otlp)
+      processors: [batch] # Paketler (batch)
+      exporters: [loki] # Loki’ye yollar
