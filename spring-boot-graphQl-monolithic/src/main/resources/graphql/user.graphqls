@@ -1,0 +1,47 @@
+scalar Date
+scalar Long
+
+type Query {
+    getAllUserResponses(pageNo: Int!, pageSize: Int!): PageResponse_UserResponse
+    getUserDetailsResponseById(id: Long!): UserDetailsResponse
+}
+
+type Mutation{
+    createUser(userCreateRequest: UserCreateRequest!) : UserResponse
+}
+
+input UserCreateRequest{
+    firstName: String!
+    lastName: String!
+    email: String!
+    password: String!
+    userAuthRole: UserAuthRole!
+}
+
+type UserResponse{
+    id: ID
+    firstName: String
+    lastName: String
+    email: String
+    userAuthRole: UserAuthRole
+    createDate: Date
+    updateDate: Date
+}
+
+type PageResponse_UserResponse {
+    content: [UserResponse]
+    totalPages: Int
+    totalElements: Long
+    number: Int
+    size: Int
+}
+
+enum UserAuthRole{
+    USER
+    ADMIN
+}
+
+type UserDetailsResponse{
+    userResponse: UserResponse
+    photos(page: Int, size: Int): PageResponse_PhotoDetailResponse
+}

@@ -1,0 +1,28 @@
+extend type Mutation {
+    createComment(commentCreateRequest: CommentCreateRequest!): CommentResponse
+}
+
+extend type Query {
+    getAllCommentResponseByPhotoId(photoId: Long!): [CommentResponse]
+}
+
+input CommentCreateRequest{
+    text: String!
+    userId: Long!
+    photoId: Long!
+}
+
+type CommentResponse{
+    id: ID
+    text: String
+    createDate: Date
+    updateDate: Date
+}
+
+type PageResponse_CommentResponse {
+    content: [CommentResponse]
+    totalPages: Int
+    totalElements: Long
+    number: Int
+    size: Int
+}

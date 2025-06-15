@@ -1,0 +1,34 @@
+
+extend type Mutation{
+    createPhoto(photoCreateRequest: PhotoCreateRequest!): PhotoResponse
+}
+
+extend type Query {
+    getPhotoDetailResponseById(id: Long!): PhotoDetailResponse
+}
+
+input PhotoCreateRequest{
+    userId: Long!
+    imageUrl: String!
+}
+
+type PhotoResponse{
+    id: ID
+    imageUrl: String
+    createDate: Date
+    updateDate: Date
+}
+
+type PhotoDetailResponse{
+    photo: PhotoResponse
+    comments(page: Int, size: Int): PageResponse_CommentResponse
+    likes(page: Int, size: Int): PageResponse_LikeResponse
+}
+
+type PageResponse_PhotoDetailResponse  {
+    content: [PhotoDetailResponse]
+    totalPages: Int
+    totalElements: Long
+    number: Int
+    size: Int
+}

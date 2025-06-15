@@ -1,0 +1,26 @@
+extend type Mutation {
+    createLike(likeCreateRequest: LikeCreateRequest!): LikeResponse
+}
+
+extend type Query {
+    getAllLikeResponseByUserId(userId: Long!): [LikeResponse]
+}
+
+input LikeCreateRequest{
+    userId: Long!
+    photoId: Long!
+}
+
+type LikeResponse{
+    id: ID
+    createDate: Date
+    updateDate: Date
+}
+
+type PageResponse_LikeResponse {
+    content: [LikeResponse]
+    totalPages: Int
+    totalElements: Long
+    number: Int
+    size: Int
+}
