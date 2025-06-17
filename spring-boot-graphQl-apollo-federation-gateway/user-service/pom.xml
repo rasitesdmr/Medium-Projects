@@ -20,6 +20,7 @@
         <web.starter.version>3.5.0</web.starter.version>
         <lombok.version>1.18.38</lombok.version>
         <graphql.scalars.version>22.0</graphql.scalars.version>
+        <netflix-dgs.version>10.2.1</netflix-dgs.version>
     </properties>
 
     <dependencies>
@@ -36,6 +37,12 @@
             <artifactId>spring-boot-starter-graphql</artifactId>
             <version>${graphql.starter.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.netflix.graphql.dgs</groupId>
+            <artifactId>graphql-dgs-spring-graphql-starter</artifactId>
+        </dependency>
+
 
         <!--Web Starter Dependency-->
         <dependency>
@@ -80,6 +87,19 @@
             <version>${graphql.scalars.version}</version>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.netflix.graphql.dgs</groupId>
+                <artifactId>graphql-dgs-platform-dependencies</artifactId>
+                <version>${netflix-dgs.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
     <build>
         <plugins>

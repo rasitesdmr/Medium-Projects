@@ -1,0 +1,54 @@
+# Custom Scalars
+scalar Date
+scalar Long
+
+# Federation Entity: UserResponse
+type UserResponse @key(fields: "id") {
+    id: ID!
+    firstName: String
+    lastName: String
+    email: String
+    userAuthRole: UserAuthRole
+    createDate: Date
+    updateDate: Date
+}
+
+# Input Type for User Creation
+input UserCreateRequest {
+    firstName: String!
+    lastName: String!
+    email: String!
+    password: String!
+    userAuthRole: UserAuthRole!
+}
+
+# Pagination Response Type
+type PageResponse_UserResponse {
+    content: [UserResponse]
+    totalPages: Int
+    totalElements: Long
+    number: Int
+    size: Int
+}
+
+# Enum for Roles
+enum UserAuthRole {
+    USER
+    ADMIN
+}
+
+# Federation-compliant Root Query
+type Query {
+    getAllUserResponses(pageNo: Int!, pageSize: Int!): PageResponse_UserResponse
+    getUserDetailsResponseById(id: Long!): UserDetailsResponse
+}
+
+# Federation-compliant Mutation
+type Mutation {
+    createUser(userCreateRequest: UserCreateRequest!): UserResponse
+}
+
+# Ek bir detay cevabı dönüyorsan bu tip gerekir
+type UserDetailsResponse {
+    userResponse: UserResponse
+}

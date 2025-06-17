@@ -1,5 +1,6 @@
 package com.rasitesdmr.user_service.domain.response;
 
+import com.netflix.graphql.dgs.DgsEntityFetcher;
 import com.rasitesdmr.user_service.domain.enums.UserAuthRole;
 
 import java.time.LocalDateTime;
