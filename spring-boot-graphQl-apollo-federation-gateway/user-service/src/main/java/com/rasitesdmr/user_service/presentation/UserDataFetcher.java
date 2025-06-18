@@ -18,6 +18,12 @@ public class UserDataFetcher {
         this.userService = userService;
     }
 
+    @DgsMutation
+    public UserResponse createUser(@InputArgument("userCreateRequest") UserCreateRequest userCreateRequest) {
+        return userService.createUser(userCreateRequest);
+    }
+
+
     @DgsQuery
     public PageResponse<UserResponse> getAllUserResponses(
             @InputArgument("pageNo") Integer pageNo,
@@ -26,12 +32,11 @@ public class UserDataFetcher {
         return userService.getAllUserResponses(pageNo, pageSize);
     }
 
-    @DgsMutation
-    public UserResponse createUser(
-            @InputArgument("userCreateRequest") UserCreateRequest userCreateRequest
-    ) {
-        return userService.createUser(userCreateRequest);
+    @DgsQuery
+    public UserResponse getUserResponseById(@InputArgument(value = "id") Long id){
+        return userService.getUserResponseById(id);
     }
+
 
     @DgsQuery
     public UserDetailsResponse getUserDetailsResponseById(@InputArgument("id") Long id) {
