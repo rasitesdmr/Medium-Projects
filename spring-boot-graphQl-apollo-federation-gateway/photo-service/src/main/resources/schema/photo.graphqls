@@ -1,0 +1,25 @@
+scalar Date
+scalar Long
+
+
+type Mutation{
+    createPhoto(photoCreateRequest: PhotoCreateRequest!): PhotoResponse
+}
+
+type Query {
+    getPhotoResponseById(id: Long!): PhotoResponse
+}
+
+input PhotoCreateRequest{
+    userId: Long!
+    imageUrl: String!
+}
+
+
+type PhotoResponse{
+    id: ID
+    imageUrl: String
+    userId: Long
+    createDate: Date
+    updateDate: Date
+}

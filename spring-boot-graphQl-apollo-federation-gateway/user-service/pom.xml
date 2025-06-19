@@ -38,11 +38,11 @@
             <version>${graphql.starter.version}</version>
         </dependency>
 
+        <!--Graphql Starter Dependency-->
         <dependency>
             <groupId>com.netflix.graphql.dgs</groupId>
             <artifactId>graphql-dgs-spring-graphql-starter</artifactId>
         </dependency>
-
 
         <!--Web Starter Dependency-->
         <dependency>
@@ -80,7 +80,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.graphql-java/graphql-java-extended-scalars -->
+        <!--Graphql Extended Scalars Dependency-->
         <dependency>
             <groupId>com.graphql-java</groupId>
             <artifactId>graphql-java-extended-scalars</artifactId>
