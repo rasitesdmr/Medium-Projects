@@ -1,0 +1,9 @@
+{
+  "name": "gateway",
+  "private": true,
+  "dependencies": {
+    "@apollo/server": "^4.11.3",
+    "@apollo/gateway": "^2.10.0",
+    "graphql": "^16.10.0"
+  }
+}
