@@ -20,5 +20,5 @@ public interface UserService {
 
     User getById(Long id);
 
-    UserDetailsResponse getUserDetailsResponseById(Long id);
+    Boolean existsById(Long id);
 }

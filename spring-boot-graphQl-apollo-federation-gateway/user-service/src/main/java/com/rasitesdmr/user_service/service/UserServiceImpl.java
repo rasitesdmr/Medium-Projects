@@ -87,10 +87,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetailsResponse getUserDetailsResponseById(Long id) {
-        UserResponse userResponse = getUserResponseById(id);
-        return UserDetailsResponse.builder()
-                .userResponse(userResponse)
-                .build();
+    public Boolean existsById(Long id) {
+        return userRepository.existsById(id);
     }
 }

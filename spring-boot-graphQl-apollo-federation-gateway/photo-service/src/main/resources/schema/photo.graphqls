@@ -1,6 +1,11 @@
 scalar Date
 scalar Long
 
+type UserResponse @extends @key(fields: "id") {
+    id: ID! @external
+    photos(pageNo: Int!, pageSize: Int!): PageResponse_PhotoResponse
+}
+
 
 type Mutation{
     createPhoto(photoCreateRequest: PhotoCreateRequest!): PhotoResponse
@@ -15,7 +20,6 @@ input PhotoCreateRequest{
     imageUrl: String!
 }
 
-
 type PhotoResponse{
     id: ID
     imageUrl: String
@@ -23,3 +27,14 @@ type PhotoResponse{
     createDate: Date
     updateDate: Date
 }
+
+type PageResponse_PhotoResponse {
+    content: [PhotoResponse]
+    totalPages: Int
+    totalElements: Long
+    number: Int
+    size: Int
+}
+
+
+

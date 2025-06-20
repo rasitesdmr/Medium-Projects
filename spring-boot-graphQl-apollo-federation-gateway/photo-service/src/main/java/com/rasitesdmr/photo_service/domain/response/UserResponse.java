@@ -1,4 +1,4 @@
-package com.rasitesdmr.user_service.domain.response;
+package com.rasitesdmr.photo_service.domain.response;
 
 import lombok.*;
 

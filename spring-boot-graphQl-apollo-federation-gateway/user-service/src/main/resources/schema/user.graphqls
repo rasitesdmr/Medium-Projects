@@ -5,22 +5,21 @@ type Query {
     getUserResponseById(id: Long!): UserResponse
     getAllUserResponses(pageNo: Int!, pageSize: Int!): PageResponse_UserResponse
     getUserDetailsResponseById(id: Long!): UserDetailsResponse
+    existsById(id: Long!): Boolean
 }
 
 type Mutation {
     createUser(userCreateRequest: UserCreateRequest!): UserResponse
 }
 
-type UserResponse @key(fields: "id") {
+type UserResponse {
     id: ID!
     firstName: String
     lastName: String
     email: String
-    userAuthRole: UserAuthRole
     createDate: Date
     updateDate: Date
 }
-
 
 input UserCreateRequest {
     firstName: String!
