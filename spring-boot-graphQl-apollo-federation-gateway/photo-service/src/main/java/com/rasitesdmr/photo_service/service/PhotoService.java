@@ -16,4 +16,6 @@ public interface PhotoService {
     Photo getById(Long id);
 
     PageResponse<PhotoResponse> getAllByPhotoResponseByUserId(Long userId, int pageNo, int pageSize);
+
+    Boolean existsById(Long id);
 }

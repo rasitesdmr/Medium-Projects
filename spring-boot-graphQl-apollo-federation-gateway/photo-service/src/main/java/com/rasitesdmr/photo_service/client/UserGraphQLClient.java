@@ -42,6 +42,4 @@ public class UserGraphQLClient {
         if (response == null) throw new InternalServerErrorException("existUserByUserId client map null");
         return (boolean) ((Map<?, ?>) response.get("data")).get("existsById");
     }
-
-
 }

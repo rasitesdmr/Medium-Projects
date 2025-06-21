@@ -77,4 +77,9 @@ public class PhotoServiceImpl implements PhotoService {
                 photoResponses.getSize()
         );
     }
+
+    @Override
+    public Boolean existsById(Long id) {
+        return photoRepository.existsById(id);
+    }
 }
