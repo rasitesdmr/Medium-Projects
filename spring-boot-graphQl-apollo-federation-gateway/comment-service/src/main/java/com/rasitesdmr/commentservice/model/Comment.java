@@ -1,12 +1,8 @@
-package com.rasitesdmr.photo_service.model;
-
-
-import com.rasitesdmr.photo_service.domain.audit.Auditable;
+package com.rasitesdmr.commentservice.model;
+import com.rasitesdmr.commentservice.domain.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
-
-import java.util.List;
 
 @Entity
 @Getter
@@ -14,18 +10,19 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "photos")
-public class Photo extends Auditable {
+@Table(name = "comments")
+public class Comment extends Auditable {
 
     @Id
     @GeneratedValue()
     @UuidGenerator(style = UuidGenerator.Style.AUTO)
     private Long id;
-    private String imageUrl;
+    private String text;
     private Long userId;
+    private Long photoId;
 
     @Override
     public String toString() {
-        return String.format("PHOTO ID : %s", this.id);
+        return String.format("COMMENT ID : %s, TEXT : %s", this.id, this.text);
     }
 }

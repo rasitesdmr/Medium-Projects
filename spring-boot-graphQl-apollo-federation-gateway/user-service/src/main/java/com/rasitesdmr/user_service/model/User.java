@@ -5,6 +5,7 @@ import com.rasitesdmr.user_service.domain.audit.Auditable;
 import com.rasitesdmr.user_service.domain.enums.UserAuthRole;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.util.List;
 
@@ -18,7 +19,8 @@ import java.util.List;
 public class User extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue()
+    @UuidGenerator(style = UuidGenerator.Style.AUTO)
     private Long id;
     private String firstName;
     private String lastName;

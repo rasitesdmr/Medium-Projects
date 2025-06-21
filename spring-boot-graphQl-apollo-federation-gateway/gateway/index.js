@@ -8,6 +8,7 @@ const gateway = new ApolloGateway({
             { name: 'users', url: 'http://localhost:8090/graphql' },
             { name: 'photos', url: 'http://localhost:8091/graphql' },
             { name: 'likes', url: 'http://localhost:8092/graphql' },
+            { name: 'comments', url: 'http://localhost:8093/graphql' },
         ]
     })
 });

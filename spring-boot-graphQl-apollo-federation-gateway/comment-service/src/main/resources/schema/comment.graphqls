@@ -1,0 +1,39 @@
+scalar Date
+scalar Long
+
+type PhotoResponse @extends @key(fields: "id") {
+    id: ID! @external
+    comments(pageNo: Int!, pageSize: Int!): PageResponse_CommentResponse
+}
+
+type Mutation {
+    createComment(commentCreateRequest: CommentCreateRequest!): CommentResponse
+}
+
+
+type Query {
+    getCommentResponseById(id: Long!): CommentResponse
+}
+
+input CommentCreateRequest{
+    text: String!
+    userId: Long!
+    photoId: Long!
+}
+
+type CommentResponse{
+    id: ID
+    text: String
+    userId: Long
+    photoId: Long
+    createDate: Date
+    updateDate: Date
+}
+
+type PageResponse_CommentResponse {
+    content: [CommentResponse]
+    totalPages: Int
+    totalElements: Long
+    number: Int
+    size: Int
+}

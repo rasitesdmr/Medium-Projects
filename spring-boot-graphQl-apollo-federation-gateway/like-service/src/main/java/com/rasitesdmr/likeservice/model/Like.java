@@ -3,6 +3,7 @@ package com.rasitesdmr.likeservice.model;
 import com.rasitesdmr.likeservice.domain.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
 @Entity
 @Getter
@@ -14,7 +15,8 @@ import lombok.*;
 public class Like extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue()
+    @UuidGenerator(style = UuidGenerator.Style.AUTO)
     private Long id;
     private Long userId;
     private Long photoId;
