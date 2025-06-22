@@ -19,8 +19,7 @@ import java.util.List;
 public class User extends Auditable {
 
     @Id
-    @GeneratedValue()
-    @UuidGenerator(style = UuidGenerator.Style.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String firstName;
     private String lastName;

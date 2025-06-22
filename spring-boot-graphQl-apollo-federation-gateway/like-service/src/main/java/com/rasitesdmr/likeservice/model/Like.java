@@ -15,8 +15,7 @@ import org.hibernate.annotations.UuidGenerator;
 public class Like extends Auditable {
 
     @Id
-    @GeneratedValue()
-    @UuidGenerator(style = UuidGenerator.Style.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
     private Long photoId;

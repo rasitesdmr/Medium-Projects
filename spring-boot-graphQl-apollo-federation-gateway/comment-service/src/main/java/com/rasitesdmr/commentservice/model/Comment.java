@@ -14,8 +14,7 @@ import org.hibernate.annotations.UuidGenerator;
 public class Comment extends Auditable {
 
     @Id
-    @GeneratedValue()
-    @UuidGenerator(style = UuidGenerator.Style.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String text;
     private Long userId;
