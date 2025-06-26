@@ -14,10 +14,10 @@ public class PhotoResponse {
     private Long id;
     private String imageUrl;
     private Long userId;
-    private Date createDate;
-    private Date updateDate;
+    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
 
-    public PhotoResponse(Long id, String imageUrl, Long userId, Date createDate, Date updateDate) {
+    public PhotoResponse(Long id, String imageUrl, Long userId, LocalDateTime createDate, LocalDateTime updateDate) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.userId = userId;
