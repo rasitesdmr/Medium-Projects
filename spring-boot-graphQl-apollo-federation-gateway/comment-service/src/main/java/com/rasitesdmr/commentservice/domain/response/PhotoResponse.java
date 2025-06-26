@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -15,10 +16,10 @@ public class PhotoResponse {
     private Long id;
     private String imageUrl;
     private Long userId;
-    private Date createDate;
-    private Date updateDate;
+    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
 
-    public PhotoResponse(Long id, String imageUrl, Long userId, Date createDate, Date updateDate) {
+    public PhotoResponse(Long id, String imageUrl, Long userId, LocalDateTime createDate, LocalDateTime updateDate) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.userId = userId;

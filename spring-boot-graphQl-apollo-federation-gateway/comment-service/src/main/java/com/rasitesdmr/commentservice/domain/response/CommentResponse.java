@@ -3,6 +3,8 @@ package com.rasitesdmr.commentservice.domain.response;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -13,10 +15,10 @@ public class CommentResponse {
     private String text;
     private Long userId;
     private Long photoId;
-    private Date createDate;
-    private Date updateDate;
+    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
 
-    public CommentResponse(Long id, String text, Long userId, Long photoId, Date createDate, Date updateDate) {
+    public CommentResponse(Long id, String text, Long userId, Long photoId, LocalDateTime createDate, LocalDateTime updateDate) {
         this.id = id;
         this.text = text;
         this.userId = userId;
