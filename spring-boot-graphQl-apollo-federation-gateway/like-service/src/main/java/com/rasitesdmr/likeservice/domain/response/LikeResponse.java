@@ -14,10 +14,10 @@ public class LikeResponse {
     private Long id;
     private Long userId;
     private Long photoId;
-    private Date createDate;
-    private Date updateDate;
+    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
 
-    public LikeResponse(Long id, Long userId, Long photoId, Date createDate, Date updateDate) {
+    public LikeResponse(Long id, Long userId, Long photoId, LocalDateTime createDate, LocalDateTime updateDate) {
         this.id = id;
         this.userId = userId;
         this.photoId = photoId;
