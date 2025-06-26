@@ -2,6 +2,8 @@ package com.rasitesdmr.user_service.domain.response;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Getter
@@ -13,10 +15,10 @@ public class UserResponse {
      private String firstName;
      private String lastName;
      private String email;
-     private Date createDate;
-     private Date updateDate;
+     private LocalDateTime  createDate;
+     private LocalDateTime  updateDate;
 
-     public UserResponse(Long id, String firstName, String lastName, String email, Date createDate, Date updateDate) {
+     public UserResponse(Long id, String firstName, String lastName, String email, LocalDateTime  createDate, LocalDateTime  updateDate) {
           this.id = id;
           this.firstName = firstName;
           this.lastName = lastName;
