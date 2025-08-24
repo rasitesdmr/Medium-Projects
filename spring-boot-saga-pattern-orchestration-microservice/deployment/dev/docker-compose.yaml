@@ -1,0 +1,61 @@
+version: "3.9"
+
+networks:
+  network:
+    driver: bridge
+
+volumes:
+  kafka_data:
+
+services:
+  kafka:
+    image: bitnami/kafka:4.0.0-debian-12-r7
+    container_name: kafka
+    hostname: kafka
+    ports:
+      - "9092:9092"          # host -> container (PLAINTEXT_HOST)
+    environment:
+      # KRaft (Kafka 4.0) tek node controller+broker
+      KAFKA_CFG_NODE_ID: 0
+      KAFKA_CFG_PROCESS_ROLES: controller,broker
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 0@kafka:29093
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+
+      # Listener'lar
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+
+      # Geliştirme için pratik ayarlar
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR: 1
+
+      # JVM heap (geliştirme makinesi için makul)
+      KAFKA_HEAP_OPTS: "-Xms512m -Xmx512m"
+    volumes:
+      - kafka_data:/bitnami/kafka
+    healthcheck:
+      test: ["CMD", "bash", "-lc", "kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - network
+
+  redpanda-console:
+    image: docker.redpanda.com/redpandadata/console:v2.8.8
+    container_name: redpanda-console
+    restart: unless-stopped
+    environment:
+      # Console, Kafka'ya bu bootstrap adresiyle bağlanacak
+      KAFKA_BROKERS: kafka:29092
+      # İsteğe bağlı: tek cluster varsa isim vermek mantıklı
+      SERVER_LISTENPORT: "8080"
+    ports:
+      - "8090:8080"
+    depends_on:
+      - kafka
+    networks:
+      - network

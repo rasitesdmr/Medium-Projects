@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 15s # Her 15 saniyede bir hedeflerden metrik veri çekilir.
+  scrape_timeout: 10s # Hedef yanıt vermezse 10 saniye sonra zaman aşımına düşer.
+  evaluation_interval: 15s # Prometheus’un kurallar (alert/record) varsa onları ne sıklıkla çalıştıracağı.
+
+# Note : http://prometheus:9090/api/v1/write bu zaten anlık olarak push eder. Scrape ile de manuel pull eder.
+scrape_configs: # Bu bir “job” tanımıdır. Her bir kaynak grubu (Collector, Node Exporter, App) ayrı job_name ile tanımlanır.
+  - job_name: otel_collector
+    honor_timestamps: true # Collector’ın verdiği timestamp'leri dikkate alır. Genelde true bırakılır.
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    metrics_path: /metrics # /metrics Prometheus’un veri çekeceği endpoint’tir (Collector bu endpoint’i açıyor).
+    scheme: http # http ya da https. TLS gerekmediği için http.
+    static_configs:
+      - targets:
+          - collector:8889 # Docker ağı üzerinden collector servisine bağlan, 8889 portundan metrik verisini al.

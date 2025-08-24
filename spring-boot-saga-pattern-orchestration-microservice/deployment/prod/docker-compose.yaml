@@ -1,0 +1,188 @@
+version: '3.8'
+
+networks:
+  network:
+    driver: bridge
+
+volumes:
+  kafka_data:
+
+services:
+
+  booking-service:
+    container_name: booking-service
+    build:
+      context: ../../booking-service
+      dockerfile: Dockerfile
+    ports:
+      - "8008:8008"
+    env_file:
+      - .env
+    environment:
+      - JAVA_TOOL_OPTIONS=${JAVA_TOOL_OPTIONS_BOOKING_SERVICE}
+    volumes:
+      - ../javaagent:/otelagent
+    depends_on:
+      - kafka
+    networks:
+      - network
+
+  flight-service:
+    container_name: flight-service
+    build:
+      context: ../../flight-service
+      dockerfile: Dockerfile
+    ports:
+      - "8011:8011"
+    env_file:
+      - .env
+    environment:
+      - JAVA_TOOL_OPTIONS=${JAVA_TOOL_OPTIONS_FLIGHT_SERVICE}
+    volumes:
+      - ../javaagent:/otelagent
+    depends_on:
+      - kafka
+    networks:
+      - network
+
+  hotel-service:
+    container_name: hotel-service
+    build:
+      context: ../../hotel-service
+      dockerfile: Dockerfile
+    ports:
+      - "8012:8012"
+    env_file:
+      - .env
+    environment:
+      - JAVA_TOOL_OPTIONS=${JAVA_TOOL_OPTIONS_HOTEL_SERVICE}
+    volumes:
+      - ../javaagent:/otelagent
+    depends_on:
+      - kafka
+    networks:
+      - network
+
+  orchestrator-service:
+    container_name: orchestrator-service
+    build:
+      context: ../../orchestrator-service
+      dockerfile: Dockerfile
+    ports:
+      - "8009:8009"
+    env_file:
+      - .env
+    environment:
+      - JAVA_TOOL_OPTIONS=${JAVA_TOOL_OPTIONS_ORCHESTRATOR_SERVICE}
+    volumes:
+      - ../javaagent:/otelagent
+    depends_on:
+      - kafka
+    networks:
+      - network
+
+  payment-service:
+    container_name: payment-service
+    build:
+      context: ../../payment-service
+      dockerfile: Dockerfile
+    ports:
+      - "8010:8010"
+    env_file:
+      - .env
+    environment:
+      - JAVA_TOOL_OPTIONS=${JAVA_TOOL_OPTIONS_PAYMENT_SERVICE}
+    volumes:
+      - ../javaagent:/otelagent
+    depends_on:
+      - kafka
+    networks:
+      - network
+
+  kafka:
+    image: bitnami/kafka:4.0.0-debian-12-r7
+    container_name: kafka
+    hostname: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_CFG_NODE_ID: 0
+      KAFKA_CFG_PROCESS_ROLES: controller,broker
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 0@kafka:29093
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://kafka:9092
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_HEAP_OPTS: "-Xms512m -Xmx512m"
+    volumes:
+      - kafka_data:/bitnami/kafka
+    healthcheck:
+      test: [ "CMD", "bash", "-lc", "kafka-topics.sh --bootstrap-server kafka:9092 --list >/dev/null 2>&1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - network
+
+  redpanda-console:
+    image: docker.redpanda.com/redpandadata/console:v2.8.8
+    container_name: redpanda-console
+    restart: unless-stopped
+    environment:
+      KAFKA_BROKERS: kafka:29092
+      SERVER_LISTENPORT: "8080"
+    ports:
+      - "8090:8080"
+    depends_on:
+      - kafka
+    networks:
+      - network
+
+  ## Buradan itibaren opentelemetry gerekli olan image'ler
+
+  collector:
+    container_name: collector
+    image: otel/opentelemetry-collector-contrib:0.91.0
+    volumes:
+      - ./otel-collector.yml:/etc/otelcol-contrib/otel-collector.yml
+    command:
+      - --config=/etc/otelcol-contrib/otel-collector.yml
+    restart: always
+    ports:
+      - "4317" # OTLP gRPC receiver
+      - "8889" # Prometheus exporter metrics
+    depends_on:
+      - jaeger-all-in-one
+    networks:
+      - network
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --enable-feature=exemplar-storage # Exemplar, trace ID gibi detayları metriklerle eşleştirmek için kullanılır.
+      - --web.enable-remote-write-receiver # Prometheus'un push verisi alabilmesini sağlar.
+    restart: always
+    ports:
+      - '9090:9090'
+    networks:
+      - network
+
+  jaeger-all-in-one:
+    container_name: jaeger
+    image: jaegertracing/all-in-one:latest
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    restart: always
+    ports:
+      - "16686:16686"
+      - "14250"
+    networks:
+      - network
